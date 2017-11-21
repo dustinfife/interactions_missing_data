@@ -6,9 +6,6 @@ iterations = 10000
 		#### preallocated
 bias.mat = data.frame(iteration=1:iterations, a=NA, b=NA, c=NA, cor=NA, skew=NA, p.missing=NA, n=1000, mu.z=NA, mu.x=NA)
 
-		#### source the lcorrelations package
-source("research/RPackages/lcorrelations/R/Headrick.R")
-
 for (i in 1:nrow(bias.mat)){
 
 		#### randomly sample parameters
@@ -110,29 +107,5 @@ for (i in 1:nrow(bias.mat)){
 }
 
 d = bias.mat
-plot(bias.mat$skew, bias.mat$corrected, ylim=c(-.5, .5))
-lines(lowess(bias.mat$skew, bias.mat$Sample), col="red")
-abline(h=0, col="white")
-head(bias.mat)
-bias.mat$skew
-summary(lm(corrected~skew+mu.z+a+b + c + cor+p.missing+mu.x, data=bias.mat))
-head(bias.mat)
-bias.mat$cor
-plot(jitter(bias.mat$skew), bias.mat$corrected)
 
-
-
-abline(h=0, v=0)
-
-head(bias.mat)
-
-aggregate(Sample~cor, FUN=median, data=bias.mat)
-aggregate(corrected~skew, FUN=median, data=bias.mat)
-
-plot(d$mu.z, d$corrected)
-
-
-
-
-
-write.csv(bias.mat, paste0("research/caseiii/data/mc_runif.csv"), row.names=F)		
+write.csv(bias.mat, "research/interactions/data/mc_runif.csv", row.names=F)		

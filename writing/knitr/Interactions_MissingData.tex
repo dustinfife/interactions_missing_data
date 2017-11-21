@@ -198,8 +198,8 @@ show the mathematical advantages of doing so. After which, I will review
 the missing data literature and show how centering predictors may change
 a \enquote{Missing At Random} situation into on that is \enquote{Missing
 \emph{Not} at Random,} which I will then highlight via a simulated
-example. Finally, I will introduce a correction that allows researchers
-to center predictors without bias, and assess its performance via Monte
+example. Finally, I introduce a correction that allows researchers to
+center predictors without bias, and assess its performance via Monte
 Carlo Simulation.
 
 \subsection{Regression and Centering}\label{regression-and-centering}
@@ -336,7 +336,7 @@ variables:
 \tightlist
 \item
   \(SAT\) scores. Since these were recorded before selection, these data
-  are technically observable and missingness due to this is MAR.
+  are observable and missingness due to this is MAR.
 \item
   \(SAT\cdot SES\) scores. This product term is correlated with the
   probability of missingness in such a way that is independent of
@@ -378,7 +378,8 @@ obtain an unbiased estimate using current missing data techniques.
 To illustrate this problem (centering predictors exacerbates bias when
 interactions are present), I performed a simulation by doing the
 following\footnote{Complete access to the code that generated the data
-  is freely available from the author:}:
+  is freely available from the author:
+  \url{https://github.com/dustinfife/interactions_missing_data}}:
 
 \begin{enumerate}
 \def\labelenumi{(\arabic{enumi})}
@@ -386,8 +387,8 @@ following\footnote{Complete access to the code that generated the data
 \item
   Generate 100 fictitious \(SES\) and \(SAT\) scores. These scores were
   generated from a random normal distribution. The means were set to 10
-  and 3, respectively, their standard deviations to 3 and .2, and their
-  covariance to 90 (which is equivalent to a 0.3 correlation).
+  and 500, respectively, their standard deviations to 3 and 100, and
+  their covariance to 36 (which is equivalent to a 0.30 correlation).
 \item
   Standardize the predictor variables. On half of the iterations (see
   step 7), the predictor variables were centered around their mean.
@@ -398,8 +399,8 @@ following\footnote{Complete access to the code that generated the data
   Generate 100 \(FYGPA\) scores, using the following equation:
   \[ FYGPA = b_0 + b_1SES + b_2SAT + b_3SES\cdot SAT + e\] The values
   for \(b_0-b_3\) were chosen such that \(FYGPA\) had an expected value
-  of 3.0 and a standard deviation of 0.4. The standardized slopes
-  (\(b_1-b_3\)) were set to 0.3. (Note that the value of unstandardized
+  of 3 and a standard deviation of 0.40. The standardized slopes
+  (\(b_1-b_3\)) were set to 0.30. (Note that the value of unstandardized
   values of \(b_0-b_2\) changed depending on whether the current
   iteration was standardized.)
 \item
@@ -467,7 +468,7 @@ Case III correction and requires two inputs:
   \(SES\) and \(SES\cdot SAT\).
 \item
   The restricted (biased) variance/covariance matrix of all the
-  variables in the model. In this case, that would be \(SES\), SAT,
+  variables in the model. In this case, that would be \(SES\), \(SAT\),
   \(SES \cdot SAT\), and \(FYGPA\).
 \end{enumerate}
 
@@ -499,9 +500,9 @@ estimate).
 
 To compute the covariance between \(SAT\) and \(SAT\cdot SES\), we can
 use Equation \ref{eq:correction}. Unfortunately, this requires knowing
-\(SES^2\), or the unrestricted (unbiased) variance of \(SES\). Because
-these data were collected on incumbents, we don't have access to that
-information. However, this parameter can be acquired using the PL
+\(\sigma_{SES}^2\), or the unrestricted (unbiased) variance of \(SES\).
+Because these data were collected on incumbents, we don't have access to
+that information. However, this parameter can be acquired using the PL
 correction, assuming we have access to the incumbent data for \(SAT\).
 (If that information is unavailable, we direct the reader to Fife,
 Hunter, \& Mendoza, 2016, who offer corrections for situations where
@@ -558,7 +559,7 @@ To review, the PL-based correction (\(r_{pl}\)) for centered predictors
 is performed as follows:
 
 \begin{enumerate}
-\item Use the PL to estimate the variance/covariance matrix between $SES$ and SAT
+\item Use the PL to estimate the variance/covariance matrix between $SES$ and $SAT$
 \item Use Equations \ref{eq:correction}-\ref{eq:correction3} to complete the third rows/columns in $\Sigma^\prime$.
 \item Use the corrected $\Sigma^\prime$ to obtain the final corrected variance/covariance matrix. 
 \end{enumerate}
@@ -581,13 +582,15 @@ parameters varied are shown in Table \ref{tab:mcparams}.\footnote{Many
   Subsequently, a Random Forest (RF; Breiman, 2001) model was used to
   determine which parameters were predictive of bias. The benefit of RF
   is that it natively detects interactions, which is clearly important
-  in this situation. After performing the RF, only \(b_{sat}\), \(r\),
-  and skew were predictive of bias. (Note that we only predicted bias
-  for the \(r_{pl}\) estimate. Had we also predicted bias for the
-  \(r_{c3}\) estimate, other variables may have also been predictive).
-  We also varied \(p_{missing}\) and \(n\) since they will affect
+  in this situation. After performing the RF, only \(b_{sat}\),
+  \(p_{missing}\), \(r\), and skew were predictive of bias. (Note that
+  we only predicted bias for the \(r_{pl}\) estimate. Had we also
+  predicted bias for the \(r_{c3}\) estimate, other variables may have
+  also been predictive). We also varied \(n\) since it will affect
   standard errors. Full details of this preliminary simulation are
-  available from the author.} In short, I did the following:
+  available from the project files on Github
+  (\url{https://github.com/dustinfife/interactions_missing_data}).} In
+short, I did the following:
 
 \begin{table}[ht]
 \centering
@@ -654,21 +657,23 @@ Figure \ref{fig:results} shows how bias changed as a function of
 skewness (\(s\)), the correlation between \(SES\) and \(SAT\) (\(r\)),
 and the slope predicting \(FYGPA\) from \(SAT\) (\(b_{ses}\), though to
 save space in the plot, I have labeled it \(b\)). Each dot in the plot
-represents the mean, collapsed across the conditions labeled on the
-x-axis. Note that I have only labeled the various values of \(b\) only
-once since they repeat across the plot and I wanted to avoid visual
-clutter. I have also added a horizontal line at zero to indicate where
-Bias = 0. The \(r_{pl}\) estimate is in gray with closed circles, while
-the \(r_{c3}\) estimate is in black with open circles.
+represents the mean, averaged within the conditions labeled on the
+x-axis. For example, the far left dots represent the mean amount of bias
+when r=0.5, s=100, b=0.371 for \(r_{c3}\) (top) and \(r_{pl}\) (bottom).
+Note that I have only labeled the various values of \(b\) only once
+since they repeat across the plot and I wanted to avoid visual clutter.
+I have also added a horizontal line at zero to indicate where Bias = 0.
+The \(r_{pl}\) estimate is in gray with closed circles, while the
+\(r_{c3}\) estimate is in black with open circles.
 
 The first thing to notice is that, in nearly every condition, \(r_{pl}\)
 outperforms \(r_{c3}\); across nearly all conditions, the \(r_{pl}\)
 (gray) estimates are very near the horizontal line. The only time
 \(r_{c3}\) performs as good or better than \(r_{pl}\) is when skewness
-is positive, and \(r\) and \(b\) are high. Otherwise, \(r_{pl}\) always
+is negative, and \(r\) and \(b\) are high. Otherwise, \(r_{pl}\) always
 outperforms the other estimate. In addition, \(r_{pl}\) is generally
 unbiased, even under fairly heavy skew. It performs poorest when
-skewness is positive, and \(r\) and \(b\) are high, reaching values of
+skewness is negative, and \(r\) and \(b\) are high, reaching values of
 approximately -0.08 (meaning the actual correlation is underestimated by
 0.08). It is also worth noting that \(r_{c3}\) almost always
 overestimates, while \(r_{pl}\) may underestimate or overestimate,

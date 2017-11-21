@@ -1,14 +1,15 @@
 clear()
-a =.3;
-b=.3;
-c=.3;
-cor=.3
-n=100
-iterations=10000
+source('research/interactions/R/0.parameters_setup.R')
+a =demo.slopes;
+b=demo.slopes;
+c=demo.slopes;
+cor=demo.cor
+n=demo.n
+iterations=demo.iterations
 
-sd.z = 100; mu.z = 500
-sd.x = 3; mu.x = 10
-sd.y = .4; mu.y = 3
+sd.z = demo.sd[2]; mu.z = demo.mean[2]
+sd.x = demo.sd[1]; mu.x = demo.mean[1]
+sd.y = demo.sd[3]; mu.y = demo.mean[3]
 
 bias.mat = data.frame(iteration=1:iterations, standardize = rep(c(T,F), times=iterations/2), CaseIII=NA, EM = NA, Sample=NA)
 i=2
@@ -93,11 +94,11 @@ for (i in 1:nrow(bias.mat)){
 	
 }
 
-write.csv(bias.mat, "research/caseIII/data/demonstration_results.csv", row.names=F)
+write.csv(bias.mat, "research/interactions/data/demonstration_results.csv", row.names=F)
 aggregate(CaseIII~standardize, FUN=mean, data=bias.mat)
 d = reshape(bias.mat, varying=c("CaseIII", "EM", "Sample"), v.names="Estimate", times=c("CaseIII", "EM", "Sample"), timevar = ("Method"),direction="long")		
 	
-pdf("research/caseIII/writing/plots/demonstration.pdf")		
+pdf("research/interactions/writing/plots/demonstration.pdf")		
 par1()		
 #par(mfrow=c(3,2), oma=c(0,0,0,1.5))
 
@@ -117,23 +118,9 @@ mns = apply(bias.mat[(bias.mat$standardize),], 2, sd)
 mns
 
 
-head(bias.mat)
-opar <- par(mfrow = c(3,2), oma = c(0, 0, 1.1, 0)) 
-plot(dataBS$BS, dataFC$FC)
-plot(m1, las=1)
-par(opar)
 
-
-require(knitr)
-xtable()
-?print.xtable
-
-pdf("research/caseIII/writing/plots/demonstration.pdf")
-par1()
-boxplot(bias.mat$CaseIII, bias.mat$EM, bias.mat$Sample, xaxt="n", ylab="Estimated Correlation Between X and Y")
-axis(1, at=1:3, labels=c("Case III Corrected", "EM Corrected", "Random Sample"))
-dev.off()
-
-.05*70000
-600/70000
-printx
+# # pdf("research/interactions/writing/plots/demonstration.pdf")
+# par1()
+# boxplot(bias.mat$CaseIII, bias.mat$EM, bias.mat$Sample, xaxt="n", ylab="Estimated Correlation Between X and Y")
+# axis(1, at=1:3, labels=c("Case III Corrected", "EM Corrected", "Random Sample"))
+# dev.off()
