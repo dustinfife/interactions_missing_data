@@ -1,0 +1,52 @@
+\apaapptab
+\setcounter{appendix}{0}
+\begin{table*}[ht]
+\ifnextchar[{\eatarg}{}
+[ht]
+\caption{Simulated Dataset of SAT, High School GPA, and First Year GPA Scores. Missing Cells Indicate Those Scores that Fall Below the Median of SAT.}
+\label{tab:combs}
+\begin{tabular}{cccc}
+  \hline
+SAT & HSGPA & SAT $\times$ HSGPA & First Year GPA \\
+  \hline
+565.51 & 3.02 & 9.11 & 3.17 \\
+  612.75 & 2.85 & 8.13 & 2.87 \\
+  527.39 &  &  &  \\
+  556.31 & 3.06 & 9.35 & 3.56 \\
+  359.03 &  &  &  \\
+  660.74 & 3.74 & 13.98 & 3.23 \\
+  578.58 & 2.98 & 8.89 & 2.76 \\
+  649.78 & 2.71 & 7.36 & 2.41 \\
+  565.17 & 2.89 & 8.33 & 3.28 \\
+  316.50 &  &  &  \\
+  440.26 &  &  &  \\
+  558.56 & 3.43 & 11.74 & 3.55 \\
+  455.61 &  &  &  \\
+  391.18 &  &  &  \\
+  460.10 &  &  &  \\
+  336.51 &  &  &  \\
+  536.26 & 2.86 & 8.17 & 3.08 \\
+  444.54 &  &  &  \\
+  452.57 &  &  &  \\
+  532.63 & 2.85 & 8.14 & 3.15 \\
+   \hline
+\end{tabular}
+\end{table*}
+\efloatseparator
+ 
+\begin{table*}[ht]
+\ifnextchar[{\eatarg}{}
+[ht]
+\centering
+\begin{tabular}{rrrr}
+  \hline
+ & SAT & GPA & c(covz.xz, covx.xz, var.xz) \\
+  \hline
+SAT & 10000.00 & 4.26 & 35120.36 \\
+  GPA & 4.26 & 0.10 & 110.72 \\
+  3 & 35120.36 & 110.72 & 162427.03 \\
+   \hline
+\end{tabular}
+\end{table*}
+\efloatseparator
+ 

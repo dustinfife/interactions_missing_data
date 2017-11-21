@@ -1,0 +1,39 @@
+%latex(results, file = file, rgroup = row.major, title = "", n.rgroup = rep(nrow(results)/length(row.major),     times = length(row.major)), rowname = row.minor, colheads = col.major,     cellTexCmds = latexTranslate(col.mat), ...)%
+\begin{landscape}\begin{table}[!tbp]
+\begin{center}
+\begin{tabular}{lrrrr}
+\hline\hline
+\multicolumn{1}{l}{}&\multicolumn{1}{c}{b=0}&\multicolumn{1}{c}{b=0.099}&\multicolumn{1}{c}{b=0.242}&\multicolumn{1}{c}{b=0.371}\tabularnewline
+\hline
+{\bfseries skew=-100.00}&&&&\tabularnewline
+   ~~cor=0.00&\cellcolor[gray]{1}   $ 0.00$&\cellcolor[gray]{1}   $ 0.00$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $-0.02$\tabularnewline
+   ~~cor=0.10&\cellcolor[gray]{1}   $ 0.01$&\cellcolor[gray]{1}   $ 0.00$&\cellcolor[gray]{1}   $-0.02$&\cellcolor[gray]{0.73}   $-0.03$\tabularnewline
+   ~~cor=0.30&\cellcolor[gray]{1}   $ 0.01$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{0.73}   $-0.03$&\cellcolor[gray]{0.47}   $-0.05$\tabularnewline
+   ~~cor=0.50&\cellcolor[gray]{1}   $ 0.01$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{0.47}   $-0.05$&\cellcolor[gray]{0.2}   $-0.08$\tabularnewline
+\hline
+{\bfseries skew=-50.00}&&&&\tabularnewline
+   ~~cor=0.00&\cellcolor[gray]{1}   $ 0.00$&\cellcolor[gray]{1}   $ 0.00$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $-0.01$\tabularnewline
+   ~~cor=0.10&\cellcolor[gray]{1}   $ 0.00$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{0.73}   $-0.03$\tabularnewline
+   ~~cor=0.30&\cellcolor[gray]{1}   $ 0.01$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{0.73}   $-0.03$&\cellcolor[gray]{0.47}   $-0.05$\tabularnewline
+   ~~cor=0.50&\cellcolor[gray]{1}   $ 0.01$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{0.47}   $-0.05$&\cellcolor[gray]{0.2}   $-0.08$\tabularnewline
+\hline
+{\bfseries skew=0.00}&&&&\tabularnewline
+   ~~cor=0.00&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $-0.01$\tabularnewline
+   ~~cor=0.10&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $-0.01$\tabularnewline
+   ~~cor=0.30&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $-0.02$&\cellcolor[gray]{1}   $-0.02$&\cellcolor[gray]{0.73}   $-0.02$\tabularnewline
+   ~~cor=0.50&\cellcolor[gray]{1}   $-0.02$&\cellcolor[gray]{0.73}   $-0.02$&\cellcolor[gray]{0.73}   $-0.03$&\cellcolor[gray]{0.73}   $-0.04$\tabularnewline
+\hline
+{\bfseries skew=50.00}&&&&\tabularnewline
+   ~~cor=0.00&\cellcolor[gray]{0.73}   $-0.03$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $ 0.02$&\cellcolor[gray]{0.47}   $ 0.05$\tabularnewline
+   ~~cor=0.10&\cellcolor[gray]{0.73}   $-0.03$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $ 0.02$&\cellcolor[gray]{0.47}   $ 0.05$\tabularnewline
+   ~~cor=0.30&\cellcolor[gray]{0.73}   $-0.02$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $ 0.02$&\cellcolor[gray]{0.47}   $ 0.04$\tabularnewline
+   ~~cor=0.50&\cellcolor[gray]{0.73}   $-0.03$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $ 0.01$&\cellcolor[gray]{0.73}   $ 0.03$\tabularnewline
+\hline
+{\bfseries skew=100.00}&&&&\tabularnewline
+   ~~cor=0.00&\cellcolor[gray]{0.73}   $-0.03$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $ 0.02$&\cellcolor[gray]{0.47}   $ 0.04$\tabularnewline
+   ~~cor=0.10&\cellcolor[gray]{0.73}   $-0.03$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $ 0.02$&\cellcolor[gray]{0.47}   $ 0.05$\tabularnewline
+   ~~cor=0.30&\cellcolor[gray]{0.73}   $-0.02$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $ 0.02$&\cellcolor[gray]{0.47}   $ 0.04$\tabularnewline
+   ~~cor=0.50&\cellcolor[gray]{0.73}   $-0.03$&\cellcolor[gray]{1}   $-0.01$&\cellcolor[gray]{1}   $ 0.01$&\cellcolor[gray]{0.73}   $ 0.03$\tabularnewline
+\hline
+\end{tabular}\end{center}
+\end{table}\end{landscape}

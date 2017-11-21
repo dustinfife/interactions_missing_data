@@ -1,0 +1,11 @@
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[htbp]
+\begin{center}
+\fitfigure{bias_correction}
+\caption{Average bias in estimating the correlation coefficient, under various conditions: correlation between the predictor variables ($r$), skewness ($s$), the slope between $SAT$ and $FYGPA$ ($b$), and estimator ($r_{pl}$ vs $r_{c3}$). Note that each line shows bias as a function of the values of $b$ ($b$=0.371, 0.242, 0.099, 0). These values are repeated, though only the first are labeled.}
+\label{fig:results}
+\end{center}
+\end{figure*}
+\efloatseparator
+ 

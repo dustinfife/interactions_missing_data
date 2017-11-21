@@ -1,0 +1,33 @@
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[htbp]
+\begin{center}
+\scalebox{0.75}{\fitfigure{../plots/demonstration}}
+\caption{Boxplots showing the distribution of two correction procedures (Case III and the EM algorithm) relative to a random sample, across 10,000 iterations. The shaded boxes represent the distribution of estimates from the uncentered predictors, while the un-shaded boxes are from the centered predictors. }
+\label{fig:demo}
+\end{center}
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[htbp]
+\begin{center}
+\fitfigure{bias_correction}
+\caption{Average bias in estimating the correlation coefficient, under various conditions: correlation between the predictor variables ($r$), skewness ($s$), the slope between $SAT$ and $FYGPA$ ($b$), and estimator ($r_{pl}$ vs $r_{c3}$). Note that each line shows bias as a function of the values of $b$ ($b$=0.371, 0.242, 0.099, 0). These values are repeated, though only the first are labeled.}
+\label{fig:results}
+\end{center}
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[htbp]
+\begin{center}
+\fitfigure{se_correction}
+\caption{Standard errors in estimating the correlation coefficient, under various conditions: sample size ($n$), skewness ($s$), the proportion of missing data ($p$), and estimator ($r_{pl}$ vs $r_{c3}$). Note that each line shows bias as a function of the values of $s$ ($s$=100, 50, 0, -50, -100). These values are repeated, though only the first are labeled.}
+\label{fig:se}
+\end{center}
+\end{figure*}
+\efloatseparator
+ 

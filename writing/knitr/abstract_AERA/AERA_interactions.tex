@@ -1,0 +1,584 @@
+\documentclass[english,man]{apa6}
+
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+
+% Table formatting
+\usepackage{longtable, booktabs}
+\usepackage{lscape}
+% \usepackage[counterclockwise]{rotating}   % Landscape page setup for large tables
+\usepackage{multirow}		% Table styling
+\usepackage{tabularx}		% Control Column width
+\usepackage[flushleft]{threeparttable}	% Allows for three part tables with a specified notes section
+\usepackage{threeparttablex}            % Lets threeparttable work with longtable
+
+% Create new environments so endfloat can handle them
+% \newenvironment{ltable}
+%   {\begin{landscape}\begin{center}\begin{threeparttable}}
+%   {\end{threeparttable}\end{center}\end{landscape}}
+
+\newenvironment{lltable}
+  {\begin{landscape}\begin{center}\begin{ThreePartTable}}
+  {\end{ThreePartTable}\end{center}\end{landscape}}
+
+  \usepackage{ifthen} % Only add declarations when endfloat package is loaded
+  \ifthenelse{\equal{\string man}{\string man}}{%
+   \DeclareDelayedFloatFlavor{ThreePartTable}{table} % Make endfloat play with longtable
+   % \DeclareDelayedFloatFlavor{ltable}{table} % Make endfloat play with lscape
+   \DeclareDelayedFloatFlavor{lltable}{table} % Make endfloat play with lscape & longtable
+  }{}%
+
+
+
+% The following enables adjusting longtable caption width to table width
+% Solution found at http://golatex.de/longtable-mit-caption-so-breit-wie-die-tabelle-t15767.html
+\makeatletter
+\newcommand\LastLTentrywidth{1em}
+\newlength\longtablewidth
+\setlength{\longtablewidth}{1in}
+\newcommand\getlongtablewidth{%
+ \begingroup
+  \ifcsname LT@\roman{LT@tables}\endcsname
+  \global\longtablewidth=0pt
+  \renewcommand\LT@entry[2]{\global\advance\longtablewidth by ##2\relax\gdef\LastLTentrywidth{##2}}%
+  \@nameuse{LT@\roman{LT@tables}}%
+  \fi
+\endgroup}
+
+
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            pdfauthor={},
+            pdftitle={When Interactions Bias Corrections: A Missing Data Correction for Centered Predictors},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=black,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+
+\setlength{\parindent}{0pt}
+%\setlength{\parskip}{0pt plus 0pt minus 0pt}
+
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+
+\ifxetex
+  \usepackage{polyglossia}
+  \setmainlanguage{}
+\else
+  \usepackage[english]{babel}
+\fi
+
+% Manuscript styling
+\captionsetup{font=singlespacing,justification=justified}
+\usepackage{csquotes}
+\usepackage{upgreek}
+
+ % Line numbering
+  \usepackage{lineno}
+  \linenumbers
+
+
+\usepackage{tikz} % Variable definition to generate author note
+
+% fix for \tightlist problem in pandoc 1.14
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% Essential manuscript parts
+  \title{When Interactions Bias Corrections: A Missing Data Correction for
+Centered Predictors}
+
+  \shorttitle{Interactions bias correlations}
+
+
+  \author{Dustin Fife\textsuperscript{1}}
+
+  \def\affdep{{""}}%
+  \def\affcity{{""}}%
+
+  \affiliation{
+    \vspace{0.5cm}
+          \textsuperscript{1} Rowan University  }
+
+ % If no author_note is defined give only author information if available
+      \newcounter{author}
+                              \authornote{
+          Correspondence concerning this article should be addressed to Dustin Fife
+          , 201 Mullica Hill Road Glassboro, NJ 08028 .
+           E-mail: \href{mailto:fife.dustin@gmail.com}{\nolinkurl{fife.dustin@gmail.com}} 
+          }
+                    
+
+  \abstract{It is commonly advised to center predictors in multiple regression,
+especially in the presence of interactions (J. Cohen, Cohen, West, \&
+Aiken, 2013). This will enhance the interpretation of regression
+parameters, and (arguably; Dalal \& Zickar, 2012; Echambadi \& Hess,
+2007; Kromrey \& Foster-Johnson, 1998) reduce multicollinearity.
+However, I demonstrate that with missing data, centering predictors may
+bias parameter estimates. I develop a Pearson-Lawyley-based (Aitken,
+1935; Lawley, 1944) correction (called \(r_{pl}\)) that is insensitive
+to centering, then evaluate its performance via Monte Carlo Simulation.}
+  \keywords{missing data, selection, range restriction, interactions \\
+
+    \indent Word count: 1994
+  }
+
+
+
+
+  \usepackage{colortbl}
+
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}
+\newtheorem{example}{Example}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\begin{document}
+
+\maketitle
+
+\setcounter{secnumdepth}{0}
+
+
+
+Centering predictors often improves the interpretation of coefficients
+(J. Cohen et al., 2013). Some have suggested it increases precision by
+reducing multicollinearity (J. Cohen et al., 2013). Although this last
+advantage is controversial (Dalal \& Zickar, 2012; Echambadi \& Hess,
+2007; Kromrey \& Foster-Johnson, 1998), none (that I know of)
+recommended against centering (except when the predictors have
+meaningful zero; J. Cohen et al., 2013). However, in one situation
+centering predictors will exacerbate bias.
+
+In this paper, I show how centering can lead to substantial bias when
+data are missing. First, I review the advantages of centering. Next, I
+show how centering predictors may change a \enquote{Missing At Random}
+into a \enquote{Missing \emph{Not} at Random} situation. Finally, I
+introduce a correction that allows researchers to center predictors
+without bias, and assess its performance via Monte Carlo Simulation.
+
+\subsection{Regression and Centering}\label{regression-and-centering}
+
+Suppose a university wishes to assess the impact of socioeconomic status
+(\(SES\)) on first year GPA (\(FYGPA\)), and wishes to correct for
+missing data (let us assume the university selected based on \(SAT\)
+scores). Further suppose these two predictors interact (e.g., for those
+with high \(SAT\) scores, \(SES\) is more predictive of \(FYGPA\)).
+Mathematically,
+
+\[ FYGPA = b_0 + b_1SES + b_2SAT + b_3SES\cdot SAT \] The researcher
+might be inclined to center both \(SES\) and \(SAT\) scores. Doing so
+supposedly has two advantages. First, the coefficients for the centered
+variables are more interpretable (J. Cohen et al., 2013). Recall that
+with interactions, the relationship between \(SES\) and \(FYGPA\) is
+non-linear; the slope between \(SES\) and \(FYGPA\) changes depending on
+the value of \(SAT\). When centered, the \(b_1\) parameter is the
+\emph{average} slope of \(FYGPA\) on \(SES\) across all values of
+\(SAT\).
+
+The second purported advantage of centering is that is removes
+\enquote{nonessential} collinearity (Aiken \& West, 1991; J. Cohen et
+al., 2013). The covariance between the interaction variable
+(\(SES\cdot SAT\)) and either predictor is a function of the means of
+\(SAT\) and \(SES\) (Aiken \& West, 1991, p. 180, Equation A.13):
+
+\begin{equation}
+cov(SES, SES\cdot SAT) = s^2_{SES} \overline{SAT} + cov(SAT, SES) \overline{SES}
+\label{eq:correction}
+\end{equation}
+
+\noindent (The above equation only applies when each predictor is
+symmetrical). When both predictors are centered, the means are zero and
+\(cov(SES, SES\cdot SAT)\) vanishes. This is what is called
+\enquote{nonessential multicollinearity,} or collinearity attributable
+to the means of the predictors.
+
+Some (e.g., J. Cohen et al., 2013) argue removing essential
+multicollinearity increases the precision of parameter estimates since
+multicollinearity tends to inflate standard errors. However, others
+(Dalal \& Zickar, 2012; Echambadi \& Hess, 2007; Kromrey \&
+Foster-Johnson, 1998) demonstrate precision is unaffected by centering.
+
+Regardless of whether centering affect precision, it is considered wise
+practice, at least for its interpretative advantages. However, under
+missing data, centering may inflate bias.
+
+\subsection{Interactions and Missing
+Data}\label{interactions-and-missing-data}
+
+In concurrent validity designs, when interactions exist, data are
+\enquote{Missing Not at Random} (MNAR; Little \& Rubin, 2014; Rubin,
+1976), which means the probability of missingness is correlated with
+both observable and unobservable data. To understand why, consider our
+previous example. Suppose students were selected based on \(SAT\) scores
+and the researcher wishes to assess the correlation between
+socioeconomic status (\(SES\)) and \(FYGPA\). However, they want to know
+the unattenuated correlation, but unfortunately only have incumbent data
+for \(SES\). Assuming \(SES\) itself is not a cause of attrition (or
+selection), missingness was actually cased by two variables:
+
+\begin{enumerate}
+\def\labelenumi{(\arabic{enumi})}
+\tightlist
+\item
+  \(SAT\) scores. Since these were recorded before selection, these data
+  are MAR (meaning missingness is caused by observable data).
+\item
+  \(SAT\cdot SES\) scores. This product term is correlated with the
+  probability of missingness such that it is independent of \(SAT\) and
+  \(SES\) alone (since an interaction is present). Some of these product
+  scores are missing (because they were not selected into the
+  university), rending them unobservable. Consequently, these data are
+  MNAR.
+\end{enumerate}
+
+Notice that the data are MNAR, regardless of whether \(SES\) itself is a
+cause of missingness (again, because the product variable is missing for
+certain applicants). Had \(SES\) been measured before selection on
+\(SAT\) occurred (i.e., in a predictive validity design), the data would
+be MAR.
+
+In most situations, the fact that the data are MNAR is not problematic.
+One need not actually model the cause of missingness to render a
+situation MAR. Rather, one simply needs a correlate of the cause of
+missingness (Collins, Schafer, \& Kam, 2001). With uncentered variables,
+the correlation between the predictors and their product is high and can
+be control for by using applicant \(SAT\) scores. When we center the
+variables, however, that correlation vanishes.
+
+\section{Correction Procedure}\label{correction-procedure}
+
+Recall the Pearson-Lawley equation (Aitken, 1935; Lawley, 1944) corrects
+estimates when missingness occurs on one or more variables. As a
+multivariate extension of Case III, it requires two inputs:
+
+\begin{enumerate}
+\def\labelenumi{(\arabic{enumi})}
+\tightlist
+\item
+  The unrestricted covariance matrix of the variables responsible for
+  missingness (in this case, \(SES\) and \(SES\cdot SAT\)):
+\end{enumerate}
+
+\[
+   \Sigma=
+  \left[ {\begin{array}{ccc}
+   \sigma^2_{SAT} & \sigma_{SAT,SES\cdot SAT} \\
+    \sigma_{SES\cdot SAT, SAT} & \sigma^2_{SES \cdot SAT}  \\
+  \end{array} } \right]
+\]
+
+\begin{enumerate}
+\def\labelenumi{(\arabic{enumi})}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  The restricted covariance matrix of all the variables (in this case,
+  \(SES\), SAT, \(SES \cdot SAT\), and \(FYGPA\)):
+\end{enumerate}
+
+\[
+   \widetilde{\Sigma}=
+  \left[ {\begin{array}{cccc}
+   \tilde{\sigma}^2_{SAT} & \tilde{\sigma}_{SAT,{SES}} & \tilde{\sigma}_{SAT,SES\cdot SAT} & \tilde{\sigma}_{SAT, FYGPA}\\
+    \tilde{\sigma}_{SES,SAT} & \tilde{\sigma}^2_{SES} & \tilde{\sigma}_{SES,SES\cdot SAT} & \tilde{\sigma}_{SES, FYGPA} \\
+    \tilde{\sigma}_{SES\cdot SAT,SAT} &\tilde{\sigma}_{SES\cdot SAT,SES} & \tilde{\sigma}^2_{SES\cdot SAT} & \tilde{\sigma}_{SES\cdot SAT, FYGPA} \\
+     \tilde{\sigma}_{SAT, FYGPA} & \tilde{\sigma}_{SES, FYGPA} & \tilde{\sigma}_{SES\cdot SAT, FYGPA} & \tilde{\sigma}^2_{FYGPA}
+  \end{array} } \right]
+\]
+
+\noindent (Note: anything with a tilde represents the restricted
+estimate).
+
+To compute \(\sigma_{SAT, SAT\cdot SES}\), we can use Equation
+\ref{eq:correction}.This requires knowing the unrestricted variance of
+\(SES\), which may be unavailable. However, this parameter can be
+acquired using the PL correction, using incumbent data for \(SAT\). One
+simply inputs the \(1\times1\) matrix of \(SAT^2\) (i.e., the variance)
+as the unrestricted covariance matrix, then inputs the restricted
+estimates for the covariance matrix of \(SES\)/\(SAT\).
+
+After performing the PL correction, we now have most\footnote{The mean
+  of \(SES\) may not be known, but can be estimated:
+  \(\overline{SES} = b_0 + b_1\times \overline{SAT}\), where \(b_0\) and
+  \(b_1\) are the regression coefficients from the model predicting
+  \(SES\) from \(SAT\).} of the inputs necessary for Equation
+\ref{eq:correction}. We can also compute the population covariance
+between \(SES\) and \(SES \cdot SAT\) (Aiken \& West, 1991, p. 180,
+Equation A.13):
+
+\begin{equation}
+cov(SES, SES\cdot SAT) = s^2_{SAT} \overline{SES} + cov(SAT, SES) \overline{SAT}
+\label{eq:correction2}
+\end{equation}
+
+We also need the variance of the interaction term (Aiken \& West, 1991,
+p. 179, Equation A.8):
+
+\begin{equation}
+\sigma^2_{SAT\cdot SES} = \sigma^2_{SAT}\overline{SES}^2 + \sigma^2_{SES}\overline{SAT}^2 + 2\sigma_{SES,SAT}\overline{SES}\cdot \overline{SAT} + \sigma^2_{SES}\sigma^2_{SAT} + \sigma^2_{SES,SAT}
+\label{eq:correction3}
+\end{equation}
+
+(Though not necessary, we could also use Equation \ref{eq:correction2}
+to estimate \(cov[SAT, SES\cdot SAT]\)). At this point, we have a
+corrected variance/covariance matrix of the predictors:
+
+\[
+   \Sigma^\prime=
+  \left[ {\begin{array}{ccc}
+   \sigma^2_{SAT} & \sigma\prime_{SAT,{SES}} & \sigma\prime_{SAT,SES\cdot SAT} \\
+    \sigma\prime_{SES,SAT} & \sigma\prime^2_{SES} & \sigma\prime_{SES,SES\cdot SAT} \\
+    \sigma\prime_{SES\cdot SAT,SAT} &\sigma\prime_{SES\cdot SAT,SES} & \sigma\prime^2_{SES\cdot SAT}
+  \end{array} } \right]
+\] \label{eq:matrix} \noindent (Note: anything with a prime (\(\prime\))
+indicates a corrected estimate).
+
+This variance/covariance matrix can be inputted into the PL correction
+(as before) to obtain a corrected covariance matrix between all
+variables. I call this estimate \(r_{pl}\), for Pearson-Lawley. The Case
+III correction, I call \(r_{c3}\).
+
+To review, the PL-based correction (\(r_{pl}\)) for centered predictors
+is performed as follows:
+
+\begin{enumerate}
+\item Use the PL to estimate the covariance matrix between $SES$ and $SAT$.
+\item Use Equations \ref{eq:correction}-\ref{eq:correction3} to complete the third rows/columns in $\Sigma^\prime$.
+\item Use the corrected $\Sigma^\prime$ to obtain the final corrected covariance matrix. 
+\end{enumerate}
+
+Recall that the corrections from Aiken and West (1991) require
+symmetrical data. What is unknown is how robust \(r_{pl}\) is to
+skewness. In the following section, I introduce the Monte Carlo I used
+to assess \(r_{pl}\) under a variety of conditions.
+
+\section{Method}\label{method}
+
+To assess the performance of \(r_{pl}\), I performed a simulation by
+doing the following:
+
+\begin{enumerate}
+\def\labelenumi{(\arabic{enumi})}
+\tightlist
+\item
+  Generate \(n\) skewed \(SES\) and \(SAT\) scores, with means of 5 and
+  500, respectively, and variances of one. The skewness values varied as
+  shown in Table \ref{tab:mcparams}.\footnote{Many of these parameters
+    were not varied because they made little difference in preliminary
+    simulations. Only \(b_{sat}\), \(r\), and skew affected of bias.
+    Full details of this preliminary simulation are available from the
+    author.}
+\item
+  Center the predictor variables.
+\item
+  Create a product variable (\(SAT\cdot SES\)) by multiplying \(SES\)
+  and \(SAT\) scores.
+\item
+  Generate 100 \(FYGPA\) scores, using the regression weights shown in
+  Table \ref{tab:mcparams}.
+\item
+  Simulate selection on \(SAT\), by omitting \(SES\), \(SES\cdot SAT\),
+  and \(Y\) values for those who fell below the \(p\) percentile of
+  \(SAT\).
+\item
+  Compute the correlation between \(SES\) and \(FYGPA\) using \(r_{pl}\)
+  and \(r_{c3}\).
+\item
+  Repeat 10,000 times.
+\end{enumerate}
+
+\begin{table}[ht]
+\centering
+\caption{Parameters Used for the Monte Carlo Simulation} 
+\label{tab:mcparams}
+\begin{tabular}{lc}
+  \hline
+Parameters & Values \\ 
+  \hline
+$b_{ses}$ & 0.242 \\ 
+  $b_{sat}$ & 0, 0.099, 0.242, 0.371 \\ 
+  $b_{ses\cdot sat}$ & 0.242 \\ 
+  r & 0, 0.1, 0.3, 0.5 \\ 
+  $\bar{ses}$ & 5 \\ 
+  $\bar{sat}$ & 500 \\ 
+  $n$ & 50, 100, 200, 500 \\ 
+  $p_{missing}$ & 0.1, 0.3, 0.5, 0.7 \\ 
+  skew & -100, -50, 0, 50, 100 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+Both \(r_{pl}\) and \(r_{c3}\) were averaged across conditions and
+compared to the average estimates obtained from the random sample:
+
+\[Bias = \hat{r}-r\] \noindent where \(\hat{r}\) is the estimate of
+interest (either \(r_{c3}\) or \(r_{pl}\)) and \(r\) is the mean
+estimate from the random sample.
+
+\section{Results}\label{results}
+
+Figure \ref{fig:results} shows bias as a function of skewness (\(s\)),
+the correlation between \(SES\) and \(SAT\) (\(r\)), and the slope
+predicting \(FYGPA\) from \(SAT\) (\(b_{ses}\), though to save space in
+the plot, I have labeled it \(b\)). Each dot in the plot represents the
+cell mean, averaged within the conditions labeled on the x-axis. I
+labeled the various values of \(b\) only once since they repeat across
+the plot and I wanted to avoid visual clutter. I also added a horizontal
+line at zero to indicate where Bias = 0. The \(r_{pl}\) estimate is in
+gray with closed circles, while the \(r_{c3}\) estimate is in black with
+open circles.
+
+In nearly every condition, \(r_{pl}\) outperforms \(r_{c3}\); the
+\(r_{pl}\) (gray) estimates are very near the horizontal line. The only
+time \(r_{c3}\) performs as good or better than \(r_{pl}\) is when
+skewness is positive, and \(r\) and \(b\) are high. Otherwise,
+\(r_{pl}\) always outperforms the other estimate. In addition,
+\(r_{pl}\) is generally unbiased, even under heavy skew. It performs
+poorest when skewness is positive, and \(r\) and \(b\) are high,
+reaching approximately -0.08 (meaning the actual correlation is
+underestimated by 0.08). Also, \(r_{c3}\) almost always overestimates,
+while \(r_{pl}\) may underestimate or overestimate, depending on the
+values of skewness, \(r\), and \(b\).
+
+\begin{figure}[htbp]
+\begin{center}
+\fitfigure{bias_correction}
+\caption{Average bias in estimating the correlation coefficient, under various conditions: correlation between the predictor variables ($r$), skewness ($s$), the slope between $SAT$ and $FYGPA$ ($b$), and estimator ($r_{pl}$ vs $r_{c3}$). Note that each line shows bias as a function of the values of $b$ ($b$=0.371, 0.242, 0.099, 0). These values are repeated, though only the first are labeled.}
+\label{fig:results}
+\end{center}
+\end{figure}
+
+\section{Discussion}\label{discussion}
+
+Centering predictors is often recommended to enhance parameter
+interpretation and reduce multicollinearity. I have shown a major
+disadvantage of centering predictors: they increase bias under missing
+data. Centering predictors strips \enquote{nonessential} correlation
+between the interaction the predictor variables. Subsequently, the
+predictors are unable to augment the missing data model and mitigate
+bias.
+
+Fortunately, there need not be a trade-off between bias and the
+advantages of centering predictors. In this paper, I developed a
+correction that allows researchers to center predictors when data are
+missing. This correction assumes symmetrical predictors. However, the
+simulation demonstrated that \(r_{pl}\) was robust to fairly extreme
+skewness, and usually outperformed Case III (which assumes no
+interactions exist between the predictors). Never did average bias
+exceed 0.08. The Case III correction (\(r_{c3}\)), on the other hand,
+performed poorly, sometimes exceeding 0.2 in bias.
+
+Because of \(r_{pl}\)'s marginal sensitivity to skew, I recommend
+caution when researchers use the correction. Univariate distributions
+ought to be inspected for symmetry and transformed when appropriate. I
+would not, however, recommend using \(r_{c3}\) when interactions exist.
+
+Although \(r_{pl}\) minimizes bias when centering predictors, there is
+no reason not to use it when variables are \emph{not} centered. When
+variables are left uncentered, \emph{some} bias is expected (because the
+data are technically MNAR). Consequently, I recommend researchers
+inspect predictor/criterion relationships for potential interactions
+before applying Case III. If interactions are suspected, the \(r_{pl}\)
+correction will generally lead to unbiased estimates of the population
+correlation.
+
+\newpage
+
+\section{References}\label{references}
+
+\setlength{\parindent}{-0.5in} \setlength{\leftskip}{0.5in}
+
+\hypertarget{refs}{}
+\hypertarget{ref-aiken_multiple_1991}{}
+Aiken, L. S., \& West, S. G. (1991). \emph{Multiple Regression: Testing
+and Interpreting Interactions}. Newbury Park, CA: SAGE Publications,
+Inc.
+
+\hypertarget{ref-aitken_note_1935}{}
+Aitken, A. C. (1935). Note on Selection from a Multivariate Normal
+Population. \emph{Proceedings of the Edinburgh Mathematical Society},
+\emph{4}(2), 106--110.
+doi:\href{https://doi.org/10.1017/S0013091500008063}{10.1017/S0013091500008063}
+
+\hypertarget{ref-cohen_applied_2013}{}
+Cohen, J., Cohen, P., West, S. G., \& Aiken, L. S. (2013). \emph{Applied
+multiple regression/correlation analysis for the behavioral sciences}.
+New York, NY: Routledge.
+
+\hypertarget{ref-collins_comparison_2001}{}
+Collins, L. M., Schafer, J. L., \& Kam, C. M. (2001). A comparison of
+inclusive and restrictive strategies in modern missing data procedures.
+\emph{Psychological Methods}, \emph{6}(4), 330--351.
+
+\hypertarget{ref-dalal_common_2012}{}
+Dalal, D. K., \& Zickar, M. J. (2012). Some Common Myths About Centering
+Predictor Variables in Moderated Multiple Regression and Polynomial
+Regression. \emph{Organizational Research Methods}, \emph{15}(3),
+339--362.
+doi:\href{https://doi.org/10.1177/1094428111430540}{10.1177/1094428111430540}
+
+\hypertarget{ref-echambadi_mean-centering_2007}{}
+Echambadi, R., \& Hess, J. D. (2007). Mean-Centering Does Not Alleviate
+Collinearity Problems in Moderated Multiple Regression Models.
+\emph{Marketing Science}, \emph{26}(3), 438--445.
+doi:\href{https://doi.org/10.1287/mksc.1060.0263}{10.1287/mksc.1060.0263}
+
+\hypertarget{ref-kromrey_mean_1998}{}
+Kromrey, J. D., \& Foster-Johnson, L. (1998). Mean Centering in
+Moderated Multiple Regression: Much Ado about Nothing. \emph{Educational
+and Psychological Measurement}, \emph{58}(1), 42--67.
+doi:\href{https://doi.org/10.1177/0013164498058001005}{10.1177/0013164498058001005}
+
+\hypertarget{ref-lawley_note_1944}{}
+Lawley, D. N. (1944). A Note on Karl Pearson's Selection Formulae.
+\emph{Proceedings of the Royal Society of Edinburgh. Section A.
+Mathematical and Physical Sciences}, \emph{62}(01), 28--30.
+doi:\href{https://doi.org/https://doi.org/10.1017/S0080454100006385}{https://doi.org/10.1017/S0080454100006385}
+
+\hypertarget{ref-little_statistical_2014}{}
+Little, R. J. A., \& Rubin, D. B. (2014). \emph{Statistical Analysis
+with Missing Data}. Hoboken, NJ: John Wiley \& Sons.
+
+\hypertarget{ref-rubin_inference_1976}{}
+Rubin, D. B. (1976). Inference and missing data. \emph{Biometrika},
+\emph{63}(3), 581--592.
+doi:\href{https://doi.org/10.1093/biomet/63.3.581}{10.1093/biomet/63.3.581}
+
+
+
+
+
+
+\end{document}
