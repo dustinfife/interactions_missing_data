@@ -228,6 +228,8 @@ Recall that the corrections from @aiken_multiple_1991 require that the data are 
 ## Interactions and Main Effects
 In situations where interactions are presents, many suggest interpreting ``main effects'' is unwise, since an interaction signals that the nature of the main effect varies as a function of another variable (e.g., references like applebaum and cramer). Likewise, if an interaction exists (e.g., between $SES$ and $SAT$) estimating the simple correlation between $SES$ and $FYGPA$ is unwise, corrected or not, because the degree of correlation between the two will differ at various levels of $SAT$. 
 
+When an interaction exists, a better course of action is to understand 
+
 
 /// what happens to slopes/intercepts when we center predictors? Do they become biased? Probably! Because they're centered on only half the data!
 
