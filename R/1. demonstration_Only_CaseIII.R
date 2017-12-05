@@ -54,6 +54,7 @@ for (i in 1:nrow(bias.mat)){
 			##### create y
 	d$y = b0 + ap*d$x + bp*d$z + cp*d$x*d$z + rnorm(length(d$x), 0, sqrt(vy))	
 
+
 			##### now select on z and create the datasets
 	n.selected = which(d$z<mu.zn)		
 	full = d
@@ -108,13 +109,23 @@ for (i in 1:nrow(bias.mat)){
 		##### export results
 write.csv(bias.mat, "research/interactions/data/demonstration_results.csv", row.names=F)
 
+		#### load tidyverse stuff
+require(tidyverse)
 
 		###### create Figure 1 in paper
 d = reshape(bias.mat, varying=c("CaseIII", "EM", "Sample"), v.names="Estimate", times=c("CaseIII", "EM", "Sample"), timevar = ("Method"),direction="long")		
-#pdf("research/interactions/writing/plots/demonstration.pdf")		
-par1()		
-boxplot(Estimate~Method, data=d[d$standardize,], at=c(1,4,7), xlim=c(0,9), xaxt="n", ylim=range(d$Estimate), ylab="Bias")
-boxplot(Estimate~Method, data=d[!(d$standardize),], at=c(2, 5, 8), add=T, xaxt="n", col="lightgray")
-axis(1, c(1.5, 4.5, 7.8), labels=c("Case III",  "EM", "Random Sample"))
-abline(h=0)
-aggregate(Estimate~Method, data=d, FUN=median)
+
+		###### group the outliers
+d2 <-
+  d %>%
+  group_by(Method) %>%
+  mutate(outlier = Estimate > quantile(Estimate, .75) + IQR(Estimate) * 1.5 | Estimate < quantile(Estimate, .25) - IQR(Estimate) * 1.5) %>%
+  ungroup
+  
+		###### produce the plot
+theme_set(theme_bw(base_size=14,base_family='Times New Roman'))
+p = ggplot(data = d2, mapping=aes(x=Method, y=Estimate))
+p + geom_boxplot(outlier.color="lightgray", outlier.shape = NA, width=.5) +  # NO OUTLIERS
+  geom_jitter(data = function(x) dplyr::filter_(x, ~ outlier), width=.05, alpha=.15) +
+  theme(text=element_text(family="Times")) + geom_hline(yintercept=0, col="lightgray") + labs(x="")
+ggsave("research/interactions/writing/plots/demonstration.pdf")
