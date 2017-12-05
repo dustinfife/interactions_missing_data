@@ -49,13 +49,9 @@ for (i in 1:nrow(bias.mat)){
 
 
 	##### figure out gramian range of c
-	a = a^2 + b^2 +2*a*b*cor
-	b = 2*a*corx.xz + 2*b*corz.xz
-	c.max = (1/2)*(sqrt(4*(ap*covx.xz + bp*covz.xz)^2 - 4*(ap^2 + 2*ap*bp*cov + bp^2 - 1)) - 2*ap*covx.xz - 2*bp*covz.xz)
-	c.min = (1/2)*(-sqrt(4*(ap*corx.xz + bp*covz.xz)^2 - 4*(ap^2 + 2*ap*bp*cov + bp^2 - 1)) - 2*ap*covx.xz - 2*b*corz.xz)
-	cp = c.max*(sd.y/sqrt(var.xz))
-	
-	sd.y^2 - (ap^2*sd.x^2 + bp^2*sd.z^2 + cp^2*var.xz + 2*ap*bp*cov + 2*ap*cp*covx.xz + 2*bp*cp*covz.xz)	
+	c.max = (1/2)*(sqrt(4*(a*corx.xz + b*corz.xz)^2 - 4*(a^2 + 2*a*b*cor + b^2 - 1)) - 2*a*corx.xz - 2*b*corz.xz)
+	c.min = (1/2)*(-sqrt(4*(a*corx.xz + b*corz.xz)^2 - 4*(a^2 + 2*a*b*cor + b^2 - 1)) - 2*a*corx.xz - 2*b*corz.xz)
+
 
 	##### now randomly decide c
 	c = runif(1, max(c.min,-c.max), c.max); bias.mat$c[i] = c
@@ -68,12 +64,7 @@ for (i in 1:nrow(bias.mat)){
 		##### create interaction term
 	d$zx = d$z*d$x
 
-			##### finish recreating weights	
-	
-	
 
-c.max
-c
 			##### compute expected population correlation  (computed empirically because var.xz and covz.xz, etc. assume skewness)
 	pop = (ap*sd.x^2 + bp*cov + cp*covx.xz)/(sd.x*sd.y)	
 
@@ -132,11 +123,41 @@ c
 }
 head(bias.mat)
 
-i
+
 apply(bias.mat, 2, median)
 d = bias.mat
+require(tidyverse)
+theme_set(theme_bw())
 ggplot(data=bias.mat,
-	mapping = aes(x=c, y=CaseIII)) + geom_point(alpha = .1) + geom_smooth() + scale_y_continuous(limits=c(-.1, .1))
+	mapping = aes(x=c, y=CaseIII)) + geom_point(alpha = .1) + geom_smooth(se=F) + scale_y_continuous(limits=c(-.1, .1))
 ggplot(data=bias.mat,
 	mapping = aes(x=c, y=corrected)) + geom_point(alpha = .1) + geom_smooth() + scale_y_continuous(limits=c(-.1, .1))	
 write.csv(bias.mat, "research/interactions/data/mc_runif.csv", row.names=F)		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#####
