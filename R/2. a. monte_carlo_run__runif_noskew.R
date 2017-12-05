@@ -5,7 +5,7 @@
 iterations = 1000
 		#### preallocated
 bias.mat = data.frame(iteration=1:iterations, a=NA, b=NA, c=NA, cor=NA, skew=NA, p.missing=NA, n=1000, mu.z=NA, mu.x=NA)
-i=1
+
 for (i in 1:nrow(bias.mat)){
 
 		#### randomly regression weights for x/z
@@ -27,22 +27,21 @@ for (i in 1:nrow(bias.mat)){
 	cor = runif(1, 0, .5); 	bias.mat$cor[i] = cor
 	n = round(runif(1, 50, 500))
 
-			##### create compute the covariance
+			##### convert correlation to covariance
 	cov = cor*sd.x*sd.z
 
 		#### create new weights to retain proper metrix (a' = a*sx/sy)	
 	ap = a*(sd.y/sd.x)
 	bp = b*(sd.y/sd.z)
 
-	var.xz = sd.z^2*mu.x^2 + sd.x^2*mu.z^2 + 2*cov*mu.x*mu.z + sd.x^2*sd.z^2 + cov^2		
 
-		
-		##### compute expected covariance and variance of interaction term (must be done empirically because skewness throws things off)
+		##### compute expected covariance and variance of interaction term
+	var.xz = sd.z^2*mu.x^2 + sd.x^2*mu.z^2 + 2*cov*mu.x*mu.z + sd.x^2*sd.z^2 + cov^2		
 	covx.xz =sd.x^2*mu.z + cov*mu.x
 	covz.xz =sd.z^2*mu.x + cov*mu.z
 	mu.xz = mu.x*mu.z + cov
 
-			##### compute correlations (standardized) with interaction term
+		##### compute correlations (standardized) with interaction term
 	corx.xz = covx.xz/(sd.x*sqrt(var.xz))	
 	corz.xz = covz.xz/(sd.z*sqrt(var.xz))		
 	var.xz.standardized = 1 + cor^2		#### variance of interaction if x/z are standardized
@@ -53,19 +52,18 @@ for (i in 1:nrow(bias.mat)){
 	c.min = (1/2)*(-sqrt(4*(a*corx.xz + b*corz.xz)^2 - 4*(a^2 + 2*a*b*cor + b^2 - 1)) - 2*a*corx.xz - 2*b*corz.xz)
 
 
-	##### now randomly decide c
+	##### now randomly decide c (within grammian interval)
 	c = runif(1, max(c.min,-c.max), c.max); bias.mat$c[i] = c
 	cp = c*(sd.y/sqrt(var.xz))
 		
-	#### generate skewed data
+	#### generate data
 	d = data.frame(mvrnorm(n, mu=c(mu.z, mu.x), Sigma=matrix(c(sd.z^2,cov, cov, sd.x^2), nrow=2)))
 	names(d) = c("z", "x")	
 
 		##### create interaction term
 	d$zx = d$z*d$x
 
-
-			##### compute expected population correlation  (computed empirically because var.xz and covz.xz, etc. assume skewness)
+			##### compute expected population correlation
 	pop = (ap*sd.x^2 + bp*cov + cp*covx.xz)/(sd.x*sd.y)	
 
 			##### compute explained varince in y (unstandardized)
@@ -105,14 +103,6 @@ for (i in 1:nrow(bias.mat)){
 			##### 4. Use PL again to correct the matrix
 	final.corrected =cov2cor(mv.correction(data.matrix(cov(na.omit(rest))), p=3, v.pp=data.matrix(corrected)))
 	bias.mat$corrected[i] = final.corrected[2,4]-pop
-	
-	
-			##### compute slope differences (to see if they're affected)
-	mod.full = lm(y~x+z+zx, data=full)		
-	mod.rest = lm(y~x+z+zx, data=rest)
-
-		
-
 
 		# #### track progress
 	if (i/100 == round(i/100)){
@@ -121,10 +111,9 @@ for (i in 1:nrow(bias.mat)){
 	}
 
 }
-head(bias.mat)
 
 
-apply(bias.mat, 2, median)
+		#### preliminary visualization
 d = bias.mat
 require(tidyverse)
 theme_set(theme_bw())
@@ -132,6 +121,8 @@ ggplot(data=bias.mat,
 	mapping = aes(x=c, y=CaseIII)) + geom_point(alpha = .1) + geom_smooth(se=F) + scale_y_continuous(limits=c(-.1, .1))
 ggplot(data=bias.mat,
 	mapping = aes(x=c, y=corrected)) + geom_point(alpha = .1) + geom_smooth() + scale_y_continuous(limits=c(-.1, .1))	
+	
+		#### export to a file
 write.csv(bias.mat, "research/interactions/data/mc_runif.csv", row.names=F)		
 
 
