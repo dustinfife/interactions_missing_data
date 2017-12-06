@@ -1,5 +1,5 @@
 clear()
-files = list.files("research/caseiii/data/", pattern="monte_carlo_caseiii_", full.names=T)
+files = list.files("research/interactions/data/", pattern="monte_carlo_caseiii_", full.names=T)
 files = gsub("//", "/", files)
 
 		#### read one initially to get things started
@@ -23,10 +23,11 @@ results_caseiii = results_sample
 results_corrected = results_sample
 results_uncorrected = results_sample
 sd_sample =sd_caseiii=sd_corrected=sd_uncorrected = results_sample
-
+i=1
 for (i in 1:length(files)){
 	d = read.csv(files[i])
 	b = data.matrix(aggregate(sample, FUN=mean, data=d, na.rm=F))
+	head(b)
 	
 	### record means
 	results_sample[,,i] = b
@@ -48,9 +49,10 @@ sample_results = data.frame(apply(results_sample, c(1,2), FUN=mean))
 caseiii_results = data.frame(apply(results_caseiii, c(1,2), FUN=mean))
 results_corrected = data.frame(apply(results_corrected, c(1,2), FUN=mean))
 results_uncorrected = data.frame(apply(results_uncorrected, c(1,2), FUN=mean))
+head(sample_results)
 names(sample_results) = names(caseiii_results) = names(results_corrected) = names(results_uncorrected) = c(varying, "Estimate")
-names(results_corrected)[5] = "p"
-names(caseiii_results)[5] = "p"
+names(results_corrected)[6] = "p"
+names(caseiii_results)[6] = "p"
 
 
 sd_sample = data.frame(apply(sd_sample, c(1,2), FUN=mean))
@@ -58,12 +60,12 @@ sd_caseiii = data.frame(apply(sd_caseiii, c(1,2), FUN=mean))
 sd_corrected = data.frame(apply(sd_corrected, c(1,2), FUN=mean))
 sd_uncorrected = data.frame(apply(sd_uncorrected, c(1,2), FUN=mean))
 names(sd_sample) = names(sd_caseiii) = names(sd_corrected) = names(sd_uncorrected) = c(varying, "SD")
-names(results_corrected)[5] = "p"
-names(caseiii_results)[5] = "p"
+names(results_corrected)[6] = "p"
+names(caseiii_results)[6] = "p"
 
 		#### export the results
 save(sample_results, caseiii_results, results_corrected, results_uncorrected,
 	sd_sample, sd_caseiii, sd_corrected, sd_uncorrected,
-	file="research/caseiii/data/MC_final_results.Rdat")
+	file="research/interactions/data/MC_final_results.Rdat")
 
 

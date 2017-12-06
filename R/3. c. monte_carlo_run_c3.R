@@ -1,17 +1,17 @@
 #clear()
 
 #### determine which datasets have been run already
-load("research/caseiii/data/last_done.Rdat")
+load("research/interactions/data/last_done.Rdat")
 num = mc_caseiii[mc_caseiii[,2]==1,1]
 num = num[length(num)] + 1
 
 
 		##### load next dataset
-bias.mat = read.csv(paste0("research/caseiii/data/monte_carlo_caseiii_", num, ".csv"))		
+bias.mat = read.csv(paste0("research/interactions/data/monte_carlo_caseiii_", num, ".csv"))		
 head(bias.mat)
 		##### note that I've started another iteration
 mc_caseiii = rbind(mc_caseiii, c(num, 0))
-save(mc_caseiii, file="research/caseiii/data/last_done.Rdat")
+save(mc_caseiii, file="research/interactions/data/last_done.Rdat")
 
 		##### read in global params
 sd.z = sd.x = sd.y = 1; mu.y = 0
@@ -34,11 +34,6 @@ for (i in 1:nrow(bias.mat)){
 	d = data.frame(rmsn(n=n, xi=c(mu.z, mu.x), Omega = matrix(c(1, cor, cor, 1), nrow=2), alpha=c(skew, skew)))
 	names(d) = c("z", "x")	
 
-	#### standardize them
-	d$z = d$z-mean(d$z)
-	d$x = d$x-mean(d$x)
-	mu.xn = 0; mu.zn = 0
-
 			##### create interaction term
 	d$zx = d$z*d$x
 	
@@ -48,13 +43,13 @@ for (i in 1:nrow(bias.mat)){
 	cov = cor*(sd.x*sd.z)
 
 			##### compute expected covariance and variance of interaction term
-	covx.xz =sd.x^2*mu.zn + cov*mu.xn
-	covz.xz =sd.z^2*mu.xn + cov*mu.zn
-	var.xz = sd.z^2*mu.xn^2 + sd.x^2*mu.zn^2 + 2*cov*mu.xn*mu.zn + sd.x^2*sd.z^2 + cov^2	
+	covx.xz =sd.x^2*mu.z + cov*mu.x
+	covz.xz =sd.z^2*mu.x + cov*mu.z
+	var.xz = sd.z^2*mu.x^2 + sd.x^2*mu.z^2 + 2*cov*mu.x*mu.z + sd.x^2*sd.z^2 + cov^2	
 
 			##### finish recreating weights	
 	cp = c*(sd.y/sqrt(var.xz))
-	mu.xz = mu.xn*mu.zn + cov
+	mu.xz = mu.x*mu.z + cov
 
 
 			##### compute expected population correlation
@@ -65,7 +60,7 @@ for (i in 1:nrow(bias.mat)){
 	vy = sd.y^2-(ap^2*sd.x^2 + bp^2*sd.z^2 + cp^2*var(d$zx) + 2*ap*bp*cov + 2*ap*cp*cov(d$x, d$zx) + 2*bp*cp*cov(d$z, d$zx))
 
 			##### compute intercept of y
-	b0 = mu.y - (ap* mu.xn + bp* mu.zn + cp*mu.xz)
+	b0 = mu.y - (ap* mu.x + bp* mu.z + cp*mu.xz)
 
 
 			##### create y
@@ -107,10 +102,10 @@ for (i in 1:nrow(bias.mat)){
 	
 }
 
-write.csv(bias.mat, paste0("research/caseiii/data/monte_carlo_caseiii_", num, ".csv"), row.names=F)		
+write.csv(bias.mat, paste0("research/interactions/data/monte_carlo_caseiii_", num, ".csv"), row.names=F)		
 
 	#### if the monte carlo has been completed, update the tally
 if (i==nrow(bias.mat)){
 	mc_caseiii[nrow(mc_caseiii), 2] = 1
-	save(mc_caseiii, file="research/caseiii/data/last_done.Rdat")
+	save(mc_caseiii, file="research/interactions/data/last_done.Rdat")
 }	

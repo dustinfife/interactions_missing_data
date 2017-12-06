@@ -5,8 +5,8 @@ source('research/interactions/R/0.parameters_setup.R')
 require(selection)
 
 		#### set up global parameters
-a =demo.slopes;
-b=a;
+a =demo.slopes[1];
+b=demo.slopes[2];
 c=demo.int;
 cor=demo.cor
 n=demo.n
@@ -56,7 +56,7 @@ for (i in 1:nrow(bias.mat)){
 
 
 			##### now select on z and create the datasets
-	n.selected = which(d$z<mu.zn)		
+	n.selected = which(d$z<quantile(d$z, .7))		
 	full = d
 	rest = full; rest[n.selected,c("x", "zx", "y")] = NA
 	sample = full[sample(1:nrow(full), size=nrow(na.omit(rest))),]
@@ -121,11 +121,16 @@ d2 <-
   group_by(Method) %>%
   mutate(outlier = Estimate > quantile(Estimate, .75) + IQR(Estimate) * 1.5 | Estimate < quantile(Estimate, .25) - IQR(Estimate) * 1.5) %>%
   ungroup
-  
+require(ggplot2)  
 		###### produce the plot
 theme_set(theme_bw(base_size=14,base_family='Times New Roman'))
 p = ggplot(data = d2, mapping=aes(x=Method, y=Estimate))
 p + geom_boxplot(outlier.color="lightgray", outlier.shape = NA, width=.5) +  # NO OUTLIERS
   geom_jitter(data = function(x) dplyr::filter_(x, ~ outlier), width=.05, alpha=.15) +
-  theme(text=element_text(family="Times")) + geom_hline(yintercept=0, col="lightgray") + labs(x="")
+  theme(text=element_text(family="Times")) + geom_hline(yintercept=0, col="lightgray") + labs(x="") + scale_y_continuous(labels=seq(-.3, .5, .1), minor_breaks = seq(-.3, .5, .1))
+head(d2)
+head(d)
+prism.plots(Estimate~Method, data=d)
+
+
 ggsave("research/interactions/writing/plots/demonstration.pdf")

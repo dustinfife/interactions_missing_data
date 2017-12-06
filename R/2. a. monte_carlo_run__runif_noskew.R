@@ -2,7 +2,7 @@
 #### this simulation randomly varies a bunch of parameters (slopes between each of predictors, means, correlations, etc). This is a preliminary simulation to determine which 
 #### parameters actually make a difference in bias (or standard errors). 
 
-iterations = 1000
+iterations = 10000
 		#### preallocated
 bias.mat = data.frame(iteration=1:iterations, a=NA, b=NA, c=NA, cor=NA, skew=NA, p.missing=NA, n=1000, mu.z=NA, mu.x=NA)
 

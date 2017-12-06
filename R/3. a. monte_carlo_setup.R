@@ -1,8 +1,8 @@
 clear()
 set.seed(732017)
-
+		###the final parameters to be estimated are mu.z, c, p.missing, cor, and skew
 		##### read in MC parameters from knitr file
-params = read.csv("research/caseiii/data/mc_parameters.csv")
+params = read.csv("research/interactions/data/mc_parameters.csv")
 fix.func = function(x){as.numeric(unlist(strsplit(as.character(x), ", ")))}
 a = fix.func(params[1,2])
 b= fix.func(params[2,2])
@@ -14,11 +14,6 @@ iterations=500
 sd.z = 1; mu.z = fix.func(params[6,2])
 sd.x = 1; mu.x = fix.func(params[5,2])
 sd.y = 1; mu.y = 0
-
-
-		##### read in packages
-require(selection)
-require(fifer)
 
 		##### preallocate
 bias.mat = expand.grid(a=a,b=b,c=c,cor=cor,n=n,mu.z=mu.z, mu.x=mu.x, skew=skew, p.missing=fix.func(params[8,2]), i=1:iterations, Sample=NA, caseIII=NA, corrected=NA, uncorrected=NA)
@@ -34,8 +29,8 @@ for (i in 1:length(breakups)){
 	} else {
 		new.d = bias.mat[breakups[i]:nrow(bias.mat),]
 	}
-	write.csv(new.d, paste0("research/caseiii/data/monte_carlo_caseiii_", i, ".csv"), row.names=F)
+	write.csv(new.d, paste0("research/interactions/data/monte_carlo_caseiii_", i, ".csv"), row.names=F)
 }
 
 mc_caseiii = data.frame(last.done=0, completed=1)
-save(mc_caseiii, file="research/caseiii/data/last_done.Rdat")
+save(mc_caseiii, file="research/interactions/data/last_done.Rdat")
